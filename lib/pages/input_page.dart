@@ -7,7 +7,6 @@ import 'package:record/record.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
-import 'dart:typed_data';
 import '../services/gemini_service.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
@@ -22,22 +21,29 @@ class _InputPageState extends State<InputPage> {
   final TextEditingController materiController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
   final AudioRecorder _audioRecorder = AudioRecorder();
-  
+
   bool isLoading = false;
   bool isRecording = false;
 
   // PICK IMAGE
   Future<void> _pickImage() async {
-    final pickedFile = await _imagePicker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await _imagePicker.pickImage(
+      source: ImageSource.gallery,
+    );
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
-      
+
       String mime = 'image/jpeg';
       String name = pickedFile.name.toLowerCase();
-      if (name.endsWith('.png')) mime = 'image/png';
-      else if (name.endsWith('.webp')) mime = 'image/webp';
-      else if (name.endsWith('.heic')) mime = 'image/heic';
-      else if (name.endsWith('.heif')) mime = 'image/heif';
+      if (name.endsWith('.png')) {
+        mime = 'image/png';
+      } else if (name.endsWith('.webp')) {
+        mime = 'image/webp';
+      } else if (name.endsWith('.heic')) {
+        mime = 'image/heic';
+      } else if (name.endsWith('.heif')) {
+        mime = 'image/heif';
+      }
 
       _processMedia(bytes, mime);
     }
@@ -47,20 +53,23 @@ class _InputPageState extends State<InputPage> {
   Future<void> _pickDocument() async {
     FilePickerResult? result = await FilePicker.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'txt'], // Hapus doc/docx karena Gemini butuh penanganan khusus
+      allowedExtensions: [
+        'pdf',
+        'txt',
+      ], // Hapus doc/docx karena Gemini butuh penanganan khusus
       withData: true, // Wajib di Web
     );
 
     if (result != null && result.files.single.bytes != null) {
       final bytes = result.files.single.bytes!;
       String ext = result.files.single.extension?.toLowerCase() ?? '';
-      
+
       if (ext == 'txt') {
         try {
           String text = String.fromCharCodes(bytes);
           setState(() {
-            materiController.text = materiController.text.isEmpty 
-                ? text 
+            materiController.text = materiController.text.isEmpty
+                ? text
                 : "${materiController.text}\n\n$text";
           });
           if (mounted) {
@@ -70,33 +79,37 @@ class _InputPageState extends State<InputPage> {
           }
         } catch (e) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Gagal membaca txt: $e')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('Gagal membaca txt: $e')));
           }
         }
       } else if (ext == 'pdf') {
         try {
-          setState(() { isLoading = true; });
+          setState(() {
+            isLoading = true;
+          });
           // Membaca teks langsung dari PDF secara lokal! (Sangat cepat & tanpa error API)
           final PdfDocument document = PdfDocument(inputBytes: bytes);
           String text = PdfTextExtractor(document).extractText();
           document.dispose();
-          
+
           setState(() {
-            materiController.text = materiController.text.isEmpty 
-                ? text 
+            materiController.text = materiController.text.isEmpty
+                ? text
                 : "${materiController.text}\n\n$text";
             isLoading = false;
           });
-          
+
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Teks dari PDF berhasil dimuat!')),
             );
           }
         } catch (e) {
-          setState(() { isLoading = false; });
+          setState(() {
+            isLoading = false;
+          });
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Gagal mengekstrak teks PDF: $e')),
@@ -111,7 +124,11 @@ class _InputPageState extends State<InputPage> {
   Future<void> _toggleRecording() async {
     if (kIsWeb) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Rekaman audio belum didukung di Web. Gunakan Gambar/Dokumen.')),
+        const SnackBar(
+          content: Text(
+            'Rekaman audio belum didukung di Web. Gunakan Gambar/Dokumen.',
+          ),
+        ),
       );
       return;
     }
@@ -132,13 +149,14 @@ class _InputPageState extends State<InputPage> {
       if (await Permission.microphone.request().isGranted) {
         // Start recording
         Directory tempDir = await getTemporaryDirectory();
-        String path = '${tempDir.path}/audio_record_${DateTime.now().millisecondsSinceEpoch}.m4a';
-        
+        String path =
+            '${tempDir.path}/audio_record_${DateTime.now().millisecondsSinceEpoch}.m4a';
+
         await _audioRecorder.start(
           const RecordConfig(encoder: AudioEncoder.aacLc),
           path: path,
         );
-        
+
         setState(() {
           isRecording = true;
         });
@@ -161,8 +179,8 @@ class _InputPageState extends State<InputPage> {
     try {
       String text = await GeminiService.extractTextFromMedia(bytes, mimeType);
       setState(() {
-        materiController.text = materiController.text.isEmpty 
-            ? text 
+        materiController.text = materiController.text.isEmpty
+            ? text
             : "${materiController.text}\n\n$text";
       });
       if (mounted) {
@@ -181,7 +199,7 @@ class _InputPageState extends State<InputPage> {
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
                 child: const Text('Tutup'),
-              )
+              ),
             ],
           ),
         );
@@ -241,11 +259,17 @@ class _InputPageState extends State<InputPage> {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundColor: const Color(0xFFE59C4C).withOpacity(0.15),
+              backgroundColor: const Color(0xFFE59C4C).withValues(alpha: 0.15),
               child: Icon(icon, size: 30, color: const Color(0xFFE59C4C)),
             ),
             const SizedBox(height: 8),
-            Text(label, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
+            Text(
+              label,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
           ],
         ),
       ),
@@ -280,8 +304,8 @@ class _InputPageState extends State<InputPage> {
                     Text(
                       "Ketik materi atau ketuk tombol + untuk melampirkan dokumen dan membuat kuis interaktif secara otomatis.",
                       style: TextStyle(
-                        fontSize: 16, 
-                        color: Colors.white.withOpacity(0.9),
+                        fontSize: 16,
+                        color: Colors.white.withValues(alpha: 0.9),
                         height: 1.5,
                       ),
                     ),
@@ -289,7 +313,7 @@ class _InputPageState extends State<InputPage> {
                 ),
               ),
             ),
-            
+
             // BOTTOM INPUT BAR (Antigravity/Chat Style)
             Container(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
@@ -301,8 +325,8 @@ class _InputPageState extends State<InputPage> {
                     color: Colors.black12,
                     blurRadius: 10,
                     offset: Offset(0, -2),
-                  )
-                ]
+                  ),
+                ],
               ),
               child: Column(
                 children: [
@@ -319,7 +343,11 @@ class _InputPageState extends State<InputPage> {
                         // ATTACHMENT BUTTON
                         IconButton(
                           padding: const EdgeInsets.all(14),
-                          icon: const Icon(Icons.add_circle, color: Colors.grey, size: 28),
+                          icon: const Icon(
+                            Icons.add_circle,
+                            color: Colors.grey,
+                            size: 28,
+                          ),
                           onPressed: isLoading ? null : _showAttachmentOptions,
                         ),
                         // TEXT FIELD
@@ -331,14 +359,19 @@ class _InputPageState extends State<InputPage> {
                             decoration: const InputDecoration(
                               hintText: "Ketik materi di sini...",
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(vertical: 16),
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: 16,
+                              ),
                             ),
                           ),
                         ),
                         // MIC BUTTON
                         IconButton(
                           padding: const EdgeInsets.all(14),
-                          icon: Icon(isRecording ? Icons.stop_circle : Icons.mic, size: 28),
+                          icon: Icon(
+                            isRecording ? Icons.stop_circle : Icons.mic,
+                            size: 28,
+                          ),
                           color: isRecording ? Colors.red : Colors.grey,
                           onPressed: isLoading ? null : _toggleRecording,
                         ),
@@ -346,7 +379,7 @@ class _InputPageState extends State<InputPage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // SUBMIT BUTTON
                   SizedBox(
                     width: double.infinity,
@@ -359,23 +392,42 @@ class _InputPageState extends State<InputPage> {
                         ),
                         elevation: 0,
                       ),
-                      onPressed: isLoading ? null : () {
-                        if (materiController.text.trim().isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Materi tidak boleh kosong")),
-                          );
-                          return;
-                        }
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => QuizPage(materi: materiController.text),
-                          ),
-                        );
-                      },
-                      child: isLoading 
-                        ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5))
-                        : const Text("Buat Kuis", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+                      onPressed: isLoading
+                          ? null
+                          : () {
+                              if (materiController.text.trim().isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Materi tidak boleh kosong"),
+                                  ),
+                                );
+                                return;
+                              }
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      QuizPage(materi: materiController.text),
+                                ),
+                              );
+                            },
+                      child: isLoading
+                          ? const SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2.5,
+                              ),
+                            )
+                          : const Text(
+                              "Buat Kuis",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                 ],

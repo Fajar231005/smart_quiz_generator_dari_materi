@@ -3,9 +3,12 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GeminiService {
-  static Future<String> extractTextFromMedia(Uint8List bytes, String mimeType) async {
+  static Future<String> extractTextFromMedia(
+    Uint8List bytes,
+    String mimeType,
+  ) async {
     final apiKey = dotenv.env['GEMINI_API_KEY'] ?? "";
-    
+
     if (apiKey.isEmpty || apiKey == "MASUKKAN_API_KEY_BARU_DISINI") {
       throw Exception(
         "API Key belum disetel! Silakan masukkan API Key Anda di dalam file .env",

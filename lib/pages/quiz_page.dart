@@ -51,8 +51,7 @@ class _QuizPageState extends State<QuizPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) =>
-                ResultPage(score: score, total: questions.length),
+            builder: (_) => ResultPage(score: score, total: questions.length),
           ),
         );
       }
@@ -81,7 +80,10 @@ class _QuizPageState extends State<QuizPage> {
 
               Text(
                 "Soal ${currentIndex + 1}/${questions.length}",
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
 
               const SizedBox(height: 20),
@@ -110,7 +112,10 @@ class _QuizPageState extends State<QuizPage> {
               const SizedBox(height: 20),
 
               const Center(
-                child: Text("Pilih jawaban yang benar", style: TextStyle(color: Colors.white)),
+                child: Text(
+                  "Pilih jawaban yang benar",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
 
               const SizedBox(height: 20),
