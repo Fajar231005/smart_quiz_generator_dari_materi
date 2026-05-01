@@ -64,7 +64,7 @@ class _QuizPageState extends State<QuizPage> {
     var q = questions[currentIndex];
 
     return Scaffold(
-      backgroundColor: const Color(0xFF4F46E5),
+      backgroundColor: const Color(0xFF220E04),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -74,14 +74,14 @@ class _QuizPageState extends State<QuizPage> {
               // HEADER + BACK
               GestureDetector(
                 onTap: () => Navigator.pop(context),
-                child: const Icon(Icons.arrow_back),
+                child: const Icon(Icons.arrow_back, color: Colors.white),
               ),
 
               const SizedBox(height: 10),
 
               Text(
                 "Soal ${currentIndex + 1}/${questions.length}",
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
 
               const SizedBox(height: 20),
@@ -110,7 +110,7 @@ class _QuizPageState extends State<QuizPage> {
               const SizedBox(height: 20),
 
               const Center(
-                child: Text("Pilih jawaban yang benar"),
+                child: Text("Pilih jawaban yang benar", style: TextStyle(color: Colors.white)),
               ),
 
               const SizedBox(height: 20),

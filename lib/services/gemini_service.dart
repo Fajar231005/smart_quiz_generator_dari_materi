@@ -1,14 +1,14 @@
 import 'dart:typed_data';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GeminiService {
-  // TODO: Ganti dengan API Key Gemini Anda dari https://aistudio.google.com/
-  static const apiKey = "AIzaSyCVJnQu7gdzlNt7PTdpr25Z1AqKg97GxVI";
-
   static Future<String> extractTextFromMedia(Uint8List bytes, String mimeType) async {
-    if (apiKey.isEmpty || apiKey == "GANTI_DENGAN_API_KEY_GEMINI_ANDA") {
+    final apiKey = dotenv.env['GEMINI_API_KEY'] ?? "";
+    
+    if (apiKey.isEmpty || apiKey == "MASUKKAN_API_KEY_BARU_DISINI") {
       throw Exception(
-        "Silakan masukkan API Key Gemini di lib/services/gemini_service.dart terlebih dahulu.",
+        "API Key belum disetel! Silakan masukkan API Key Anda di dalam file .env",
       );
     }
 

@@ -32,7 +32,7 @@ class ResultPage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFF4F46E5),
+      backgroundColor: const Color(0xFF220E04),
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -55,6 +55,7 @@ class ResultPage extends StatelessWidget {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
+                    color: Colors.white,
                   ),
                 ),
 

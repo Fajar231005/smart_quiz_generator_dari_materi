@@ -241,8 +241,8 @@ class _InputPageState extends State<InputPage> {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundColor: const Color(0xFF4F46E5).withOpacity(0.15),
-              child: Icon(icon, size: 30, color: const Color(0xFF4F46E5)),
+              backgroundColor: const Color(0xFFE59C4C).withOpacity(0.15),
+              child: Icon(icon, size: 30, color: const Color(0xFFE59C4C)),
             ),
             const SizedBox(height: 8),
             Text(label, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
@@ -255,7 +255,7 @@ class _InputPageState extends State<InputPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF4F46E5),
+      backgroundColor: const Color(0xFF220E04),
       body: SafeArea(
         child: Column(
           children: [
@@ -352,7 +352,7 @@ class _InputPageState extends State<InputPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4F46E5),
+                        backgroundColor: const Color(0xFFE59C4C),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
