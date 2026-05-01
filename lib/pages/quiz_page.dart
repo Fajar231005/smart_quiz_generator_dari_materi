@@ -64,7 +64,7 @@ class _QuizPageState extends State<QuizPage> {
     var q = questions[currentIndex];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFE59C4C),
+      backgroundColor: const Color(0xFF4F46E5),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
